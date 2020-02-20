@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Fiture from '../views/Fiture.vue';
 import Game from '../views/Game.vue';
 import Room from '../views/Room.vue';
+import Finish from '../views/Finish.vue';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/room',
     name:'Room',
     component: Room
+  },
+  {
+    path:'/finish',
+    name:'Finish',
+    component: Finish
   }
 ];
 

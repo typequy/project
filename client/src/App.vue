@@ -1,10 +1,8 @@
 <template>
   <div id="app">
-    <div id="nav">
-    </div>
-      <div class="parent text-right pt-3" >
+      <!-- <div class="parent text-right pt-3" >
         <h3 style="color:white;"><i class="fab fa-github-alt"></i> Fajrin</h3>
-      </div>
+      </div> -->
     <router-view />
   </div>
 </template>
