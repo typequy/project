@@ -18,7 +18,13 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.STRING
     }
-  }, {sequelize});
+  }, {
+    hooks: {
+      beforeCreate: (instance, options) => {
+        instance.status = 'Open'
+      }
+    },
+    sequelize});
 
   Room.associate = function(models) {
     Room.hasMany(models.RoomDetail)

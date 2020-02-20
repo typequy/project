@@ -9,8 +9,8 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 app.use('/api', indexRouter)
-
 app.use(errorHandle)
+
 app.listen(port, () => {
   console.log(`Listening to port ${port}`)
 })

@@ -1,6 +1,6 @@
-const router = require('express').Router()
-const roomRouter = require('./room')
+const userRouter = require('express').Router()
+const userController = require('../controllers/user')
 
-router.use('/rooms', roomRouter)
+userRouter.post('/', userController.register)
 
-module.exports = router
+module.exports = userRouter
