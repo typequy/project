@@ -14,11 +14,20 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Name is empty'
         }
       }
+    },
+    status: {
+      type: DataTypes.STRING
     }
-  }, {sequelize});
+  }, {
+    hooks: {
+      beforeCreate: (instance, options) => {
+        instance.status = 'Open'
+      }
+    },
+    sequelize});
 
   Room.associate = function(models) {
-    // associations can be defined here
+    Room.hasMany(models.RoomDetail)
   };
   return Room;
 };
