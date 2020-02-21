@@ -3,28 +3,30 @@
 
   <div class="d-flex flex-column text-center ">
     <div class="">
-      <h1  style="font-family: 'Press Start 2P', cursive; color: white;">HALO</h1>
+      <h1  style="font-family: 'Press Start 2P', cursive; color: white;">{{ playword }}</h1>
     </div>
     <div class="">
-      <form action="">
-        <input type="text">
+      <form action="" @submit.prevent="check">
+        <input type="text" v-model="text">
       </form>
     </div>
   </div>
   
   <div class="container" style="overflow: auto; height: 50vh;">
-      <div class="box box-2">
-        <div class="cover">
-            <img
-              src="https://dummyimage.com/160x214.86/653CE7/F9FCFF&text=80"
-              alt=""
-            />
-        </div>
-        <button><div></div></button>
+    <div class="box box-2" v-for="player in players" :key="player.id">
+      <div class="cover">
+          <img
+            :src="`https://dummyimage.com/160x214.86/653CE7/F9FCFF&text=${player.score ? player.score : 'O'}`"
+            alt=""
+          />
       </div>
-      
-
-      <div class="box box-2">
+      <div class="pt-2">
+        <h3>{{player.User.name}}</h3>
+      </div>
+    </div>
+    
+    <!-- <div v-if="total > 0">
+      <div class="box box-2" v-for="j in total" :key="j + `test`">
         <div class="cover">
           <img
             src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/945546/3433202-964edcf0f07211b0.png"
@@ -33,37 +35,101 @@
         </div>
         <button><div></div></button>
       </div>
-      <div class="box box-2">
-        <div class="cover">
-          <img
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/945546/3433202-964edcf0f07211b0.png"
-            alt=""
-          />
-        </div>
-        <button><div></div></button>
-      </div>
-      <div class="box box-2">
-        <div class="cover">
-          <img
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/945546/3433202-964edcf0f07211b0.png"
-            alt=""
-          />
-        </div>
-        <button><div></div></button>
-      </div>
-      
-
-      </div>
+    </div> -->
+  </div>
 </div>
 </template>
 
 <script>
+import io from 'socket.io-client';
+import word from '../apis/random';
+
 export default {
-  name: "Game"
+  name: "Game",
+  props: ['id'],
+  data() {
+    return {
+      players: [],
+      words: [],
+      self:{},
+      text:'',
+      play:false
+    }
+  },
+  created() {
+  },
+  mounted() {
+    const socket = io(`http://localhost:3000/${this.id}`);
+    socket.on('connectToRoom',res => {
+      console.log(res,'test')
+      this.getPlayer();
+    })
+    socket.on('leave',res => {
+      console.log(res)
+      this.$router.push({name:"Finish",params:{id:this.id}})
+    })
+  },
+  methods:{
+    updateScore(){
+      this.$http
+        .put(`api/arena/${this.id}/${localStorage.id}`)
+        .then(res=>{
+          console.log(res)
+        })
+        .catch(err=>{
+          console.log(err.response)
+        })
+    },
+    close(){
+      this.$http
+        .put(`api/rooms/closed/${this.id}`)
+        .then(res=>{
+          console.log(res)
+        })
+        .catch(err=>{
+          console.log(err.response)
+        })
+    },
+    getPlayer(){
+      this.$http
+        .get(`api/arena/${this.id}/${localStorage.id}`)
+        .then(res=>{
+          this.players = res.data.result
+          this.self = res.data.self
+          if(this.players.length >= 2 && this.play === false){
+            let temp = 10 - (this.self.score / 10)
+            this.words = word(temp)
+            this.play = true
+          }
+        })
+        .catch(err=>{
+          console.log(err.response)
+        })
+    },
+    check() {
+      if(this.text === this.words[0]){
+        this.words = this.words.slice(1)
+        this.text = ""
+        this.updateScore()
+      }
+    }
+  },
+  computed:{
+    playword(){
+      return this.words[0]
+    }
+  },
+  watch: {
+    self() {
+      if(this.self.score === 100){
+        this.close()
+      }
+    }
+  }
 }
 </script>
 
-<style scope>
+<style scoped>
 @import url('https://fonts.googleapis.com/css?family=Special+Elite');
 input {
   border: 0;

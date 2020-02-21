@@ -3,7 +3,11 @@ const {Room} = require('../models')
 class RoomController {
 
   static list(req, res, next){
-    Room.findAll()
+    Room.findAll({
+      where:{
+        status:'Open'
+      }
+    })
     .then(room => {
       res.status(200).json(room)
     })
@@ -29,6 +33,12 @@ class RoomController {
 
     Room.create(roomData)
     .then(room => {
+      req.io.emit('rooms')
+      const nsp = req.io.of(`/${room.id}`);
+      nsp.on('connection', function(socket){
+        socket.join(room.id);
+        nsp.in(room.id).emit('connectToRoom', 'roster');
+      });
       res.status(201).json(room)
     })
     .catch(err => {
@@ -50,6 +60,8 @@ class RoomController {
 
     Room.update(roomData, roomId)
     .then(result => {
+      const nsp = req.io.of(`/${req.params.id}`);
+      nsp.in(req.params.id).emit('leave', 'leave');
       res.status(200).json(roomData)
     })
     .catch(err => {

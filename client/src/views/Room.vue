@@ -1,59 +1,94 @@
 <template>
   <div>
-    
     <div class ="mt-2">
       <h1  style="font-family: 'Press Start 2P', cursive; color: white;">CREATE ROOM BEFORE START GAME</h1>
+      <input type="button" class="btn btn-primary p-1" value="Create" @click="create">
     </div>
     <div class="container" style="overflow: auto; height: 50vh;">
-      <div class="box box-2">
-        <div class="cover">
-            <img
-              src="https://dummyimage.com/160x214.86/653CE7/F9FCFF&text=80"
-              alt=""
-            />
-        </div>
-        <button><div></div></button>
-      </div>
-      
-
-      <div class="box box-2">
-        <div class="cover">
+      <div class="box box-2" v-for="room in rooms" :key="room.id">
+        <div class="cover" @click="joinRoom(room.id)">
           <img
             src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/945546/3433202-964edcf0f07211b0.png"
             alt=""
           />
         </div>
-        <button><div></div></button>
-      </div>
-      <div class="box box-2">
-        <div class="cover">
-          <img
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/945546/3433202-964edcf0f07211b0.png"
-            alt=""
-          />
+        <div class="pt-2">
+          <input type="button" class="btn btn-primary p-1" :value="room.name" >
         </div>
-        <button><div></div></button>
-      </div>
-      <div class="box box-2">
-        <div class="cover">
-          <img
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/945546/3433202-964edcf0f07211b0.png"
-            alt=""
-          />
-        </div>
-        <button><div></div></button>
       </div>
       </div>
   </div>
 </template>
 
 <script>
+import io from 'socket.io-client';
+const socket = io('http://localhost:3000');
+
 export default {
-  name: "Room"
+  name: "Room",
+  data() {
+    return {
+      rooms: []
+    }
+  },
+  created() {
+    this.getRooms()
+  },
+  mounted() {
+    socket.on('rooms', () => {
+      this.getRooms()
+    })
+  },
+  methods:{
+    joinRoom(id) {
+      this.$http
+        .post(`api/arena/${id}/${localStorage.id}`)
+        .then(res=>{
+          console.log(res)
+          this.$toast.fire({
+            icon: 'success',
+            title: `Join room`
+          })
+          this.$router.push({name:'Game',params:{id}})
+        })
+        .catch(err=>{
+          console.log(err.response)
+        })
+    },
+    getRooms() {
+      this.$http
+        .get('api/rooms')
+        .then(res => {
+          this.rooms = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    create(){
+      this.$swal.fire({
+        input: 'text',
+        inputPlaceholder: 'Enter the room name'
+      })
+      .then(data => {
+        return this.$http.post('/api/rooms',{
+          name:data.value
+        })
+      })      
+      .then(res => {
+        console.log(res)
+        this.$swal.fire(`Create Room: ${res.data.name}`)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    }
+  }
 }
 </script>
 
-<style scope>
+<style scoped>
   body,
       ol,
       ul,
@@ -331,7 +366,7 @@ export default {
       }
 
       .box-2 button div::before {
-        content: "OnePass";
+        content: "Join";
         position: relative;
         top: -44px;
         left: -6px;
