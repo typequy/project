@@ -60,6 +60,8 @@ class RoomController {
 
     Room.update(roomData, roomId)
     .then(result => {
+      const nsp = req.io.of(`/${req.params.id}`);
+      nsp.in(req.params.id).emit('leave', 'leave');
       res.status(200).json(roomData)
     })
     .catch(err => {

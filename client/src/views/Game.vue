@@ -57,13 +57,16 @@ export default {
     }
   },
   created() {
-    // this.getPlayer();
   },
   mounted() {
     const socket = io(`http://localhost:3000/${this.id}`);
     socket.on('connectToRoom',res => {
       console.log(res,'test')
       this.getPlayer();
+    })
+    socket.on('leave',res => {
+      console.log(res)
+      this.$router.push({name:"Finish",params:{id:this.id}})
     })
   },
   methods:{
@@ -82,7 +85,6 @@ export default {
         .put(`api/rooms/closed/${this.id}`)
         .then(res=>{
           console.log(res)
-          this.$router.push({name:"Room"})
         })
         .catch(err=>{
           console.log(err.response)
@@ -94,7 +96,7 @@ export default {
         .then(res=>{
           this.players = res.data.result
           this.self = res.data.self
-          if(this.players.length === 2 && this.play === false){
+          if(this.players.length >= 2 && this.play === false){
             let temp = 10 - (this.self.score / 10)
             this.words = word(temp)
             this.play = true

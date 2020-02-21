@@ -31,9 +31,10 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path:'/finish',
+    path:'/finish/:id',
     name:'Finish',
     component: Finish,
+    props: true,
     meta: { requiresAuth: true },
   }
 ];
@@ -51,7 +52,6 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else {
-    console.log('test')
     if (to.name === 'Home' && localStorage.id) {
       next({ name: 'Room' });
     }

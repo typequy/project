@@ -1,9 +1,6 @@
 <template>
 <div>
     <div id="container">
-
-  
-
 </div>
   <div v-if="finishNext">
     <div class="text-center">
@@ -14,17 +11,8 @@
     </div>
     <div>
       <ul>
-        <li class="mt-2" style="text-decoration: none; ">
-      <h3 style="font-family: 'Press Start 2P', cursive; color: white;">1st Dila 100 pts "<i class="fas fa-trophy" style="color:yellow;"></i>"</h3>
-        </li>
-        <li class="mt-2" style="text-decoration: none; ">
-      <h3 style="font-family: 'Press Start 2P', cursive; color: white;">2nd Jetly 10 pts</h3>
-        </li>
-        <li class="mt-2" style="text-decoration: none; ">
-      <h3 style="font-family: 'Press Start 2P', cursive; color: white;">3rd Jetly 10 pts</h3>
-        </li>
-        <li class="mt-2" style="text-decoration: none; ">
-      <h3 style="font-family: 'Press Start 2P', cursive; color: white;">4th Fajrin 0 pts</h3>
+        <li v-for="(score,i) in scores" class="mt-2" style="text-decoration: none;" :key="score.id">
+          <h3 style="font-family: 'Press Start 2P', cursive; color: white;">{{`${i + 1} ${score.User.name} ${score.score} pts`}} "<i class="fas fa-trophy" style="color:yellow;" v-if="score.score === 100"></i>"</h3>
         </li>
       </ul>
     </div>
@@ -75,15 +63,28 @@
 <script>
 export default {
   name: "Finish",
+  props: ['id'],
   data() {
     return {
-      finishNext: false
+      finishNext: false,
+      scores:[]
     }
   },
   methods: {
     getFinish(){
       this.finishNext = true
-    }
+      this.getScore()
+    },
+    getScore(){
+      this.$http
+        .get(`api/arena/${this.id}/${localStorage.id}`)
+        .then(res=>{
+          this.scores = res.data.result
+        })
+        .catch(err=>{
+          console.log(err.response)
+        })
+    },
   }
 }
 </script>
