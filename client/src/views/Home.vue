@@ -86,24 +86,24 @@ body, html {
   -webkit-appearance: none;
 }
 .login input[type=text]:focus:valid {
-  box-shadow: 0 0 0 10000px #653CE7;
+  box-shadow: 0 0 0 10000px #214E62;
 }
 .login input[type=text]:focus:valid ~ input[type=button] {
   background: #27ae60;
-  color: #653CE7;
+  color: #214E62;
 }
 .login input[type=text]:focus:valid ~ input[type=submit] {
-  color: #653CE7;
+  color: #214E62;
 }
 .login input[type=text]:invalid {
-  box-shadow: 0 0 0 10000px #8A43F0;
+  box-shadow: 0 0 0 10000px #3B6B83;
 }
 .login input[type=text]:invalid ~ input[type=button] {
   background: #c0392b;
-  color: #8A43F0;
+  color: #3B6B83;
 }
 .login input[type=text]:invalid ~ input[type=submit] {
-  color: #8A43F0;
+  color: #3B6B83;
 }
 .login input[type=password] {
   animation: bounce1 1.3s;
