@@ -2,8 +2,8 @@
   <div >
       <div class="login">
       <h1 style="font-family: 'Press Start 2P', cursive; color: white;">Type<i class="fas fa-skull-crossbones"></i>Quy</h1>
-      <input type="text" name="username" id="name" placeholder="username" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"/>
-      <input type="button" value="Start!" class="btn" />
+      <input type="text" v-model="name" placeholder="username" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"/>
+      <input type="button" value="Start!" class="btn" @click="login"/>
     </div>
 
   </div>
@@ -13,7 +13,32 @@
 // @ is an alias to /src
 
 export default {
-  name: "Home"
+  name: "Home",
+  data() {
+    return {
+      name: ''
+    }
+  },
+  methods: {
+    login() {
+      this.$http
+        .post('api/users',{
+          name: this.name
+        })
+        .then(res => {
+          localStorage.id = res.data.user.id
+          localStorage.name = res.data.user.name
+          this.$toast.fire({
+            icon: 'success',
+            title: `welcome ${res.data.status}`
+          })
+          this.$router.push({name:'Room'})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
 };
 </script>
 
