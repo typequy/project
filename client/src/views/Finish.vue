@@ -1,5 +1,6 @@
 <template>
 <div>
+  <h3 style="color:white;"><i class="fab fa-github-alt"></i> {{users}} </h3>
     <div id="container">
 </div>
   <div v-if="finishNext">
@@ -67,7 +68,8 @@ export default {
   data() {
     return {
       finishNext: false,
-      scores:[]
+      scores:[],
+      users: localStorage.name,
     }
   },
   methods: {
@@ -85,7 +87,11 @@ export default {
           console.log(err.response)
         })
     },
-  }
+  },
+  mounted() {
+    var audio = new Audio(require('../../public/Epic Win - Sound Effect [HD].mp3'))
+    audio.play()
+  },
 }
 </script>
 
@@ -190,7 +196,8 @@ p a:hover {
 .cursor-mantap {
   cursor: pointer;
   display: flex;
-  justify-content: center
+  justify-content: center;
+  margin-top: 10rem;
 }
 
 body {

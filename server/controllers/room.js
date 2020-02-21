@@ -33,9 +33,11 @@ class RoomController {
 
     Room.create(roomData)
     .then(room => {
+      console.log('test')
       req.io.emit('rooms')
       const nsp = req.io.of(`/${room.id}`);
       nsp.on('connection', function(socket){
+        console.log('test')
         socket.join(room.id);
         nsp.in(room.id).emit('connectToRoom', 'roster');
       });
