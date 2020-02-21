@@ -1,9 +1,12 @@
 <template>
-  <div >
+  <div class="d-flex justify-content-center semua" >
       <div class="login">
       <h1 style="font-family: 'Press Start 2P', cursive; color: white;">Type<i class="fas fa-skull-crossbones"></i>Quy</h1>
       <input type="text" v-model="name" placeholder="username" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"/>
       <input type="button" value="Start!" class="btn" @click="login"/>
+    </div>
+    <div class="image-tik">
+      <img src="../../public/ngetik.gif" alt="">
     </div>
 
   </div>
@@ -26,8 +29,8 @@ export default {
           name: this.name
         })
         .then(res => {
-          localStorage.id = res.data.user.id
-          localStorage.name = res.data.user.name
+          localStorage.setItem('id', res.data.user.id)
+          localStorage.setItem('name', res.data.user.name)
           this.$toast.fire({
             icon: 'success',
             title: `welcome ${res.data.status}`
@@ -44,6 +47,12 @@ export default {
 
 <style scoped>
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,300);
+.image-tik {
+  margin-left: 100px !important;
+}
+.semua {
+  margin-top: 20vh;
+}
 body {
   background: #2C3138;
 }

@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   Room.init({
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: {
           args: true,

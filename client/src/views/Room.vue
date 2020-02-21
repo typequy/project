@@ -1,19 +1,23 @@
 <template>
   <div>
+    <div style="display: none">
+    <div v-html="play"></div>
+    </div>
+    <h3 style="color:white;"><i class="fab fa-github-alt"></i> {{users}} </h3>
     <div class ="mt-2">
       <h1  style="font-family: 'Press Start 2P', cursive; color: white;">CREATE ROOM BEFORE START GAME</h1>
-      <input type="button" class="btn btn-primary p-1" value="Create" @click="create">
+      <div class="pixel" @click="create"><p>CREATE ROOM</p></div>
     </div>
     <div class="container" style="overflow: auto; height: 50vh;">
       <div class="box box-2" v-for="room in rooms" :key="room.id">
         <div class="cover" @click="joinRoom(room.id)">
           <img
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/945546/3433202-964edcf0f07211b0.png"
+            src="skely.gif"
             alt=""
           />
         </div>
         <div class="pt-2">
-          <input type="button" class="btn btn-primary p-1" :value="room.name" >
+          <div class="pixel" @click="joinRoom(room.id)"><p>{{room.name}}</p></div>
         </div>
       </div>
       </div>
@@ -28,11 +32,14 @@ export default {
   name: "Room",
   data() {
     return {
-      rooms: []
+      rooms: [],
+      play:'',
+      users: localStorage.name,
     }
   },
   created() {
     this.getRooms()
+    this.play = `<audio src="INSTRUMEN MUSIK TEGANG 3!!!!.mp3" controls autoplay></audio>`
   },
   mounted() {
     socket.on('rooms', () => {
@@ -68,7 +75,12 @@ export default {
     create(){
       this.$swal.fire({
         input: 'text',
-        inputPlaceholder: 'Enter the room name'
+        inputPlaceholder: 'Enter the room name',
+        inputValidator: (value) => {
+          if (!value) {
+            return 'Name is Empty!'
+          }
+        },
       })
       .then(data => {
         return this.$http.post('/api/rooms',{
@@ -83,7 +95,7 @@ export default {
         console.log(err)
       })
 
-    }
+    },
   }
 }
 </script>
@@ -133,6 +145,7 @@ export default {
 
       img {
         width: 160px;
+        height: 214.86px;
       }
 
       button {
@@ -413,4 +426,75 @@ export default {
         right: 16px;
         width: 100px;
       }
+
+
+.pixel, .pixel2 {
+  font-size: 25px;
+  color: white;
+  height: auto;
+  margin: 10px;
+  font-family: 'VT323';
+  
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  text-transform: uppercase;
+  
+  cursor: pointer;
+  
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.pixel:active, .pixel2:active {
+  top: 2px;
+}
+
+.pixel {
+  line-height: 0;
+  
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  image-rendering: -o-crisp-edges; /* Opera */
+  image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+  
+  border-style: solid;
+  border-width: 20px;
+  -moz-border-image: url(https://i.imgur.com/sREM8Yn.png) 20 stretch;
+  -webkit-border-image: url(https://i.imgur.com/sREM8Yn.png) 20 stretch;
+  -o-border-image: url(https://i.imgur.com/sREM8Yn.png) 20 stretch;
+  border-image: url(https://i.imgur.com/sREM8Yn.png) 20 stretch;
+}
+
+.pixel p {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  width: auto;
+  text-align: center;
+  margin: -20px -20px;
+  line-height: 20px;
+  padding: 10px 20px;
+  
+	background: #000000;
+	background:
+		linear-gradient(135deg, transparent 10px, #000000 0) top left,
+		linear-gradient(225deg, transparent 10px, #000000 0) top right,
+		linear-gradient(315deg, transparent 10px, #000000 0) bottom right,
+		linear-gradient(45deg,  transparent 10px, #000000 0) bottom left;
+	background-size: 50% 50%;
+	background-repeat: no-repeat;
+	background-image:
+		radial-gradient(circle at 0 0, rgba(204,0,0,0) 14px, #000000 15px),
+		radial-gradient(circle at 100% 0, rgba(204,0,0,0) 14px, #000000 15px),
+		radial-gradient(circle at 100% 100%, rgba(204,0,0,0) 14px, #000000 15px),
+		radial-gradient(circle at 0 100%, rgba(204,0,0,0) 14px, #000000 15px);
+}
+
 </style>
