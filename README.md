@@ -1,5 +1,5 @@
 # Type-Quy Project
-### link deploy: 
+### link deploy: https://typequy.firebaseapp.com/
 ## Created by Jetly - Fajrin - Fadhilah
 
 
